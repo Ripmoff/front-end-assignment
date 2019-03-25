@@ -19,6 +19,32 @@ Når vi sier "spille en match", trenger du ikke få panikk, for du skal ikke imp
 - Ratingen som kalkuleres må formateres slik: `Din nye rating: ${rating}` for at testen skal godkjennes.
 - Oppgaven er fullført når begge tester i `src/App.test.js` er godkjent.
 
+### Hvordan bruker du endpointet som gir deg ny ELO-rating?
+
+```
+GET https://us-central1-chessscore.cloudfunctions.net/getNewRating?myRating
+```
+
+Resultatet vil kun påvirke `myRating` (Spiller A).
+
+| Query param       |  type  |       value       |                                description                                 |
+| ----------------- | :----: | :---------------: | :------------------------------------------------------------------------: |
+| myRating \*       | number |                   |                                                                            |
+| opponentRating \* | number |                   |                                                                            |
+| myGameResult \*   | number | `0`, `0.5` or `1` | `0` er Tap for spiller A, `0.5` er uavgjort, og `1` er seier for spiller A |
+
+Eksempelbruk:
+
+`https://us-central1-chessscore.cloudfunctions.net/getNewRating?myRating=800&opponentRating=1200&myGameResult=1`
+
+Dette endpointet tilsier at spiller A har vunnet, og får dermed tilbake en ny ELO-rating som ser slik ut:
+
+```json
+{
+  "newRating": 829
+}
+```
+
 ## Oppsett
 
 For å løse denne oppgaven trenger du følgende:
