@@ -9,8 +9,8 @@ class Sjakkify extends Component {
             players: [],
             options: [],
 
-            playerAValue: 0,
-            playerBValue: 0,
+            playerAValue: '0',
+            playerBValue: '0',
 
             playerAName: '',
             playerBName: '',
@@ -81,12 +81,14 @@ class Sjakkify extends Component {
             .then(response => { return response.json() })
             .then(data => {
 
-                // Update states in case it has been changed
                 const VALUE_A = this.state.playerAValue;
                 const VALUE_B = this.state.playerBValue;
 
+                // Update states in case names have been changed
                 if (data[VALUE_A].name !== this.state.playerAName
-                    || data[VALUE_B].name !== this.state.playerBName) {
+                    || data[VALUE_A].name === ''
+                    || data[VALUE_B].name !== this.state.playerBName
+                    || data[VALUE_B].name === '') {
 
                     let options = data.map( (player, i) => {
                         return <option key={player.name} value={i}>{player.name}</option>
@@ -110,7 +112,13 @@ class Sjakkify extends Component {
 
         // Make sure it is not the same player
         if (this.state.playerAValue === this.state.playerBValue) {
-            alert("Please choose 2 people who are not the same person");
+            alert('Please choose 2 people who are not the same person');
+            return
+        }
+
+        // Make sure it is not the same player
+        if (this.state.playerAName === '' || this.state.playerBName === '') {
+            alert('Error', 'Sadly either one or both of the people chosen do not exist anymore');
             return
         }
 
@@ -118,14 +126,17 @@ class Sjakkify extends Component {
         fetch(`${CALCULATE_ELO_ENDPOINT}?myRating=${this.state.playerARating}&opponentRating=${this.state.playerBRating}&myGameResult=${this.state.victoryValue}`)
             .then(res => {return res.json()})
             .then(response => {
-                console.log('New rating', response.newRating);
                 this.setState({rating: response.newRating});
+                console.log('Success', 'Your New rating is: ' + response.newRating);
             })
             .catch(error => console.error('Error:', error));
     }
 
     render() {
-        console.log(this.state);
+        console.log(this.state.playerAValue);
+        console.log(this.state.playerBValue);
+        console.log(this.state.playerAName);
+        console.log(this.state.playerBName);
         return (
             <div>
                 <form onSubmit={this.handleSubmit}>
