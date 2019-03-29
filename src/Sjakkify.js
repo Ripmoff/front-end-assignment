@@ -49,7 +49,7 @@ class Sjakkify extends Component {
 
                 console.log(data);
             })
-            .catch(error => console.error('Error:', error));;
+            .catch(error => console.error('Error:', error));
     }
 
     /**
@@ -77,11 +77,44 @@ class Sjakkify extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
+        fetch(PLAYERS_ENDPOINT)
+            .then(response => { return response.json() })
+            .then(data => {
+
+                // Update states in case it has been changed
+                const VALUE_A = this.state.playerAValue;
+                const VALUE_B = this.state.playerBValue;
+
+                if (data[VALUE_A].name !== this.state.playerAName
+                    || data[VALUE_B].name !== this.state.playerBName) {
+
+                    let options = data.map( (player, i) => {
+                        return <option key={player.name} value={i}>{player.name}</option>
+                    })
+
+                    this.setState({
+                        players: data,
+                        options: options,
+
+                        playerAName: '' + data[VALUE_A].name,
+                        playerBName: '' + data[VALUE_B].name,
+
+                        playerARating: '' + data[VALUE_A].rating,
+                        playerBRating: '' + data[VALUE_B].rating
+                    });
+
+                    console.log('Success', 'Your database was out of sync but has now been resynced');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+
+        // Make sure it is not the same player
         if (this.state.playerAValue === this.state.playerBValue) {
             alert("Please choose 2 people who are not the same person");
             return
         }
 
+        // Fetch results
         fetch(`${CALCULATE_ELO_ENDPOINT}?myRating=${this.state.playerARating}&opponentRating=${this.state.playerBRating}&myGameResult=${this.state.victoryValue}`)
             .then(res => {return res.json()})
             .then(response => {
@@ -130,7 +163,7 @@ class Sjakkify extends Component {
                 </form>
 
                 { /* RATING */}
-                <b>Din nye rating: {this.state.rating !== -1 && this.state.rating}</b>
+                <b>Din nye rating: {this.state.rating === -1 ? '1337' : this.state.rating}</b>
 
             </div>
         )

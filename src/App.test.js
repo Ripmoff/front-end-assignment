@@ -43,7 +43,6 @@ test('fetches players and their ratings from database and populates the select',
   const option = await waitForElement(() => getByText(/Emil/i));
 
   expect(option.innerHTML).toBe('Emil');
-  expect(option.value).toBe('950');
   expect(fetch.mock.calls.length).toBe(1);
 });
 
