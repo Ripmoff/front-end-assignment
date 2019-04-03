@@ -47,9 +47,10 @@ class Sjakkify extends Component {
                     playerBRating: '' + data[0].rating,
                 });
 
-                console.log(data);
+                console.log('Players:', data);
             })
             .catch(error => console.error('Error:', error));
+
     }
 
     /**
@@ -105,20 +106,20 @@ class Sjakkify extends Component {
                         playerBRating: '' + data[VALUE_B].rating
                     });
 
-                    console.log('Success', 'Your database was out of sync but has now been resynced');
+                    console.log('Success:', 'Your database was out of sync but has now been resynced');
                 }
             })
             .catch(error => console.error('Error:', error));
 
         // Make sure it is not the same player
         if (this.state.playerAValue === this.state.playerBValue) {
-            alert('Please choose 2 people who are not the same person');
+            console.log('Error:', 'Please choose 2 people who are not the same person');
             return
         }
 
         // Make sure it is not the same player
         if (this.state.playerAName === '' || this.state.playerBName === '') {
-            alert('Error', 'Sadly either one or both of the people chosen do not exist anymore');
+            console.log('Error:', 'Please choose 2 people who are not the same person');
             return
         }
 
@@ -127,16 +128,13 @@ class Sjakkify extends Component {
             .then(res => {return res.json()})
             .then(response => {
                 this.setState({rating: response.newRating});
-                console.log('Success', 'Your New rating is: ' + response.newRating);
+                console.log('Success:', 'Your New rating is: ' + response.newRating);
             })
             .catch(error => console.error('Error:', error));
+
     }
 
     render() {
-        console.log(this.state.playerAValue);
-        console.log(this.state.playerBValue);
-        console.log(this.state.playerAName);
-        console.log(this.state.playerBName);
         return (
             <div>
                 <form onSubmit={this.handleSubmit}>
